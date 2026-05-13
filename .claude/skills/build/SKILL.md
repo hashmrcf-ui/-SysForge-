@@ -1,597 +1,133 @@
 ---
 name: sysforge
-description: SysForge — هندسة الأنظمة. منظومة بناء SaaS الكاملة للمتدربين. من الفكرة إلى التسليم عبر 10 مراحل احترافية. Triggers on "/sysforge", "/build", "ابني نظام", "نبني", "build system", "let's build", "صانع الأنظمة".
+description: SysForge — AI-Native SaaS Operating System. Orchestrates the end-to-end building of Enterprise-Grade SaaS systems through a strict 10-phase protocol. Triggers on "/sysforge", "/sysforge resume", "/sysforge status", "/sysforge scope".
 ---
 
-# Build v2 — منشئ الأنظمة الشامل
+# SysForge — AI-Native SaaS Operating System
 
-## الملفات المرجعية
+# PURPOSE
+SysForge is the master orchestrator for building Enterprise-Grade SaaS systems. It enforces a strict 10-phase protocol to guarantee architectural integrity, security, and scalability. It prevents spaghetti code by mandating design before implementation and enforcing validation gates between phases.
 
-هذه المهارة تعتمد على ملفات خارجية — اقرأها عند الحاجة بدلاً من الاختراع:
+# INPUTS
+- User prompt describing the SaaS system (e.g., `/sysforge Accounting System`).
+- Architecture blueprints (`systems/*.md`).
+- Context from previous sessions (`templates/context.md`).
+- Output from sub-skills (`/sysarch`, `/syscore`, `/sysweb`).
 
-### قوالب المشروع
-- `templates/context.md` — قالب ملف السياق (انسخه مباشرة في Phase 2)
-- `templates/session-log.md` — قالب سجل الجلسات
+# REQUIRED OUTPUTS
+- A fully functional, production-ready SaaS application.
+- Comprehensive architectural documentation (`architecture.md`).
+- System state tracking (`context.md`).
+- Audit logs and session history (`session-log.md`).
 
-### بلوبرينت أنظمة الأعمال
-- `systems/accounting.md` — نظام محاسبة (وحدات + جداول DB + ترتيب البناء)
-- `systems/hospital.md` — نظام مستشفى
-- `systems/sales.md` — نظام مبيعات + POS
-- `systems/hr.md` — نظام موارد بشرية
+# RULES
+## 1. Anti-Spaghetti Rules
+- **No business logic in UI:** Components only consume data and emit events.
+- **No direct DB calls in components:** All data access must go through the API layer.
+- **No shared mutable state:** Use proper state management patterns (e.g., Zustand).
+- **No hidden dependencies:** All dependencies must be explicitly defined in architectural docs.
+- **No random utility dumping:** Group utilities by domain (e.g., `utils/auth.ts`, `utils/date.ts`).
 
-### المصادر المفتوحة
-- `sources/open-source.md` — أفضل 3 حلول مفتوحة لكل نوع نظام (اقرأه في PHASE 3)
+## 2. Phase Locking
+- You MUST NOT proceed to the next phase until the `VALIDATE` step is 100% complete and verified.
+- You MUST wait for explicit user approval before crossing a phase boundary.
+- If a critical error occurs, execution halts immediately.
 
-### تفاصيل خيارات المعمارية
-- `stacks/option-a.md` — البداية الذكية (أوامر + هيكل كامل)
-- `stacks/option-b.md` — النمو المنظم (Docker + Frontend + Backend)
-- `stacks/option-c.md` — منصة SaaS كاملة (multi-tenant + Stripe)
+## 3. Protocol Architecture Execution
+Every phase MUST follow this execution flow strictly:
+`INPUT` → `DECISION` → `GENERATE` → `VALIDATE` → `STOP` → `WAIT FOR APPROVAL`
 
-### مهارة بناء الويب
-- `../next-skill/SKILL.md` — بروتوكول بناء Next.js + FastAPI + AI (استدعها في PHASE 7)
+# VALIDATION
+- A global Validation Engine acts as a gatekeeper.
+- Execute the checklist specified in `protocols/validate.md` at the end of each phase.
+- Missing files, security flaws (e.g., hardcoded secrets), or architecture violations block progression.
 
-### مهارة تصميم المعمارية
-- `../saas-architect/SKILL.md` — تصميم Core Architecture الكامل (استدعها في PHASE 4.5)
-- `templates/architecture.md` — قالب ملف المعمارية الجاهز للملء
+# STOP CONDITION
+SysForge stops when:
+1. A validation gate fails.
+2. User approval is required to proceed.
+3. The 10-phase protocol completes successfully.
 
-### مهارة بناء الأساس
-- `../saas-core/SKILL.md` — بناء Core Engine الكامل: DB+RLS, Auth, Multi-tenant, Permissions, API, Frontend Shell (استدعها في PHASE 7A)
+# FAILURE HANDLING
+- If a phase fails validation, rollback any destructive changes.
+- Clearly present the error to the user with actionable steps.
+- Do not attempt to "guess" fixes for architectural violations; ask the user for clarification.
 
-**القاعدة:** PHASE 3 → `sources/open-source.md`. PHASE 4 → `systems/[النوع].md`. PHASE 4.5 → `../saas-architect/SKILL.md`. PHASE 7A → `../saas-core/SKILL.md`. PHASE 7B → `stacks/option-[x].md` + `../next-skill/SKILL.md`.
-
----
-
-## الهدف
-
-مهارة `/build` هي القائد العام لبناء أنظمة الأعمال الكاملة — محاسبة، مستشفيات، مبيعات، موارد بشرية، وغيرها — مدمجة مع وكيل ذكاء اصطناعي. مصممة للمتدرب الذي لا يملك خبرة تطوير احترافية.
-
-تعمل عبر **جلسات متعددة**. كل جلسة تكمل من حيث انتهت السابقة.
-
-## متى تُستخدم
-
-- `/build [اسم النظام]` — بدء نظام جديد
-- `/build resume [ID]` — استئناف نظام موجود
-- `"ابني نظام [اسم]"` أو `"نبني [شيء]"` — بالعربي
-- `"build me [system]"` أو `"let's build [system]"` — بالإنجليزي
-
-لا تستخدمها لمهام بسيطة. هي للمشاريع الكبيرة التي تحتاج أكثر من جلسة.
-
----
-
-## PHASE 0 — IDENTIFY (تحديد النظام)
-
-**الهدف:** معرفة نوع النظام قبل أي شيء.
-
-اعرض القائمة التالية واطلب الاختيار:
-
-```
-ما نوع النظام الذي تريد بناءه؟
-
-1. 📊 نظام محاسبة وفواتير
-2. 🏥 نظام مستشفى أو عيادة
-3. 🛒 نظام مبيعات ونقاط بيع (POS)
-4. 👥 نظام موارد بشرية وحضور
-5. 🏫 نظام مدرسة أو منصة تعليمية
-6. 🏢 نظام إدارة مشاريع
-7. 🤖 نظام آخر (صف بكلمتين)
-```
-
-بعد الاختيار، أكمل:
-- ما اسم الشركة أو المؤسسة التي سيخدمها النظام؟
-- من سيستخدمه؟ (مثال: محاسبون، أطباء، موظفو مبيعات)
-
-سجّل الإجابات. انتقل إلى Phase 1.
+# NEXT PHASE
+The orchestrator dictates the flow through the following 10 phases. Consult the specific protocol file for details on execution.
 
 ---
 
-## PHASE 1 — ALIGN (توضيح النية)
-
-**الهدف:** 5 أسئلة محددة تحدد شكل النظام قبل أي بناء.
-
-قواعد الأسئلة:
-- لغة بسيطة — بدون مصطلحات تقنية
-- كل سؤال له خيارات A/B/C حيثما أمكن
-- جولة واحدة فقط، ثم نكمل
-
-```
-بناءً على ما أخبرتني، عندي 5 أسئلة مهمة:
-
-1. كم عدد الشركات التي ستستخدم هذا النظام؟
-   A) شركة واحدة فقط
-   B) عدة شركات (كل شركة بحسابها الخاص)
-   C) غير محدد بعد
-
-2. ما وكيل الذكاء الاصطناعي الذي تريده في النظام؟
-   A) مساعد يجيب على أسئلة المستخدم
-   B) محلل يقرأ البيانات ويعطي تقارير وتنبيهات
-   C) وكيل كامل يتخذ قرارات ويرسل إشعارات تلقائياً
-   D) الثلاثة معاً
-
-3. هل تحتاج تطبيق موبايل؟
-   A) نعم، ضروري من البداية
-   B) لاحقاً، ليس الآن
-   C) لا، الويب يكفي
-
-4. أين سيعمل النظام؟
-   A) على جهازي فقط (محلي)
-   B) على الإنترنت (يصله أي مكان)
-   C) على سيرفر الشركة الخاص
-
-5. ما الميزة الأهم في نظامك؟
-   (اكتب بجملة واحدة — ما الشيء الذي إذا لم يوجد، النظام لا قيمة له؟)
-```
-
-بعد الإجابات: أعد صياغة الفهم في 3 سطور وانتظر التأكيد.
-
----
-
-## PHASE 2 — COORDINATE (مجلد المشروع)
-
-**الهدف:** إنشاء ذاكرة دائمة للمشروع تعمل عبر جميع الجلسات.
-
-هذه أهم مرحلة في المهارة. بدونها، كل جلسة تبدأ من الصفر.
-
-شغّل `/coordinate [ID]` حيث ID = اختصار اسم النظام (مثال: `hosp-ai`, `sales-pro`, `account-sys`).
-
----
-
-## PHASE 3 — SCOUT (استطلاع المصادر المفتوحة)
-
-**الهدف:** قبل أي بناء، اعرف ما هو موجود وجاهز — ووفّر على المتدرب شهوراً من التجربة.
-
-**اقرأ أولاً:** `sources/open-source.md` → قسم النظام المطلوب.
-
-عرض أفضل 3 حلول مفتوحة بهذا الأسلوب:
-
-```
-قبل ما نبني، شوف ما هو موجود:
-
-🥇 [الاسم] — [جملة واحدة]
-   ✅ جاهز فيه: [شيء 1]، [شيء 2]، [شيء 3]
-   ⚠️ ينقصه: [شيء 1 أو 2]
-   ⏱️ يوفّر عليك: ~[X] جلسة من أصل [المجموع]
-   🔗 [رابط GitHub]
-
-🥈 [الاسم] — [جملة واحدة]
-   ...
-
-🥉 [الاسم] — [جملة واحدة]
-   ...
-
-كيف تريد المتابعة؟
-A) أبني فوق [الأول]  — توفير ~70% من الوقت
-B) أستعمله مرجعاً وأبني نسختي — تعلّم + تحكم كامل
-C) من الصفر تماماً — حرية كاملة
-```
-
-**بعد الاختيار:**
-- A → سجّل في `context.md`: "بناء فوق [اسم الحل]" + نزّله في Phase 7
-- B → سجّل في `context.md`: "مرجع: [اسم الحل]" + تدرّس هيكله قبل Phase 7
-- C → لا تغيير
-
-**قاعدة:** لا تتجاوز هذه المرحلة. حتى لو الإجابة "من الصفر" — المتدرب يجب أن يرى ما يوجد ويختار بوعي.
-
-أنشئ `context.md` بهذا الشكل:
-
-```markdown
-# [ID] — [اسم النظام الكامل]
-
-**تاريخ البدء:** [التاريخ]
-**الحالة:** قيد البناء
-**المرحلة الحالية:** التخطيط
-
-## ما الذي نبنيه
-[من إجابات Phase 0 و Phase 1 — 2-3 جمل]
-
-## المستخدمون
-[من إجابة Phase 0]
-
-## وكيل الذكاء الاصطناعي
-النوع: [من إجابة Phase 1 سؤال 2]
-المهام: [اكتب لاحقاً]
-
-## المعمارية المختارة
-[تُكمل في Phase 3]
-
-## الوحدات المخطط لها
-- [ ] [وحدة 1]
-- [ ] [وحدة 2]
-- [ ] [إلخ]
-
-## القرارات الرئيسية
-- [التاريخ] — بدأنا المشروع بمهارة /build
-
-## الأسئلة المفتوحة
-[من إجابات Phase 1]
-
-## كيفية الاستئناف
-لاستئناف هذا المشروع في جلسة جديدة: `/build resume [ID]`
-```
-
-أنشئ `session-log.md` وأضف إدخال الجلسة الأولى.
-
----
-
-## PHASE 4 — BURST → USER PICKS (اختيار المعمارية)
-
-**الهدف:** عرض 3 خيارات معمارية واضحة — المتدرب يختار.
-**اقرأ أولاً:** `systems/[النوع].md` لتفهم الوحدات المطلوبة قبل عرض الخيارات.
-
-لا تقترح معمارية واحدة. دائماً عرض الثلاثة التالية وشرحها بلغة بسيطة:
-
----
-
-### الخيار A — "البداية الذكية" 🚀
-**المناسب لـ:** أول نسخة من النظام، اختبار الفكرة، شركة واحدة
-**الشكل:** كل شيء مع بعض في مشروع واحد
-**التقنيات:** Next.js + API Routes + PostgreSQL/Prisma + وكيل AI واحد
-**المزايا:** سريع البناء، سهل الفهم، تكلفة منخفضة
-**العيوب:** صعب التوسع إذا كبر النظام
-**التفاصيل الكاملة:** `stacks/option-a.md`
-**عدد الجلسات المتوقعة:** 4-6 جلسات
-
-### الخيار B — "النمو المنظم" 📐
-**المناسب لـ:** نظام يخدم 10-200 مستخدم، يمكن إضافة ميزات تدريجياً
-**الشكل:** واجهة منفصلة + خادم FastAPI + طبقة AI منفصلة
-**التقنيات:** Next.js + FastAPI + PostgreSQL + AI orchestrator
-**المزايا:** منظم، قابل للنمو، كل جزء يُصلح بدون تأثير على البقية
-**العيوب:** أعقد قليلاً في البداية
-**التفاصيل الكاملة:** `stacks/option-b.md`
-**عدد الجلسات المتوقعة:** 8-12 جلسة
-
-### الخيار C — "منصة SaaS كاملة" 🏢
-**المناسب لـ:** نظام تبيعه لعدة شركات، كل شركة بحسابها المنفصل
-**الشكل:** Multi-tenant + واجهة + API + وكلاء AI متعددون + نظام اشتراكات
-**التقنيات:** Next.js + FastAPI + PostgreSQL (multi-tenant) + multi-agent AI + Stripe
-**المزايا:** منتج SaaS حقيقي قابل للبيع، لا حدود للتوسع
-**العيوب:** يحتاج وقتاً أطول وتخطيطاً دقيقاً
-**التفاصيل الكاملة:** `stacks/option-c.md`
-**عدد الجلسات المتوقعة:** 15-20 جلسة
-
----
-
-```
-اختر: A، B، أم C؟
-(إذا لم تكن متأكداً، أخبرني وأساعدك تختار بناءً على إجاباتك السابقة)
-```
-
-بعد الاختيار:
-- سجّل المعمارية في `context.md`
-- اقرأ `stacks/option-[x].md` كاملاً لتفهم الأوامر والهيكل
-- إذا اختار C، اسأل: "هل تريد نظام اشتراكات مدفوع من البداية أم لاحقاً؟"
-
----
-
-## PHASE 4.5 — ARCHITECT (تصميم المعمارية الأساسية)
-
-**الهدف:** تصميم Core Architecture الكامل قبل أي كود — Domain Model، Multi-tenant، Auth، AI Agent، API Contract.
-
-**هذه أهم مرحلة في أي SaaS.** 80% من فشل المشاريع سببه تخطي هذه المرحلة.
-
-**شغّل:** `/saas-architect` أو اقرأ `../saas-architect/SKILL.md` واتبع الخطوات التسع.
-
-**المخرجات الإلزامية:**
-- ✅ `architecture.md` مكتمل (من قالب `templates/architecture.md`)
-- ✅ موافقة صريحة من المتدرب على كل قرار
-- ✅ إشارة لـ `architecture.md` في `context.md`
-
-**لا تنتقل لـ PHASE 5 إلا بعد اعتماد `architecture.md`.**
-
----
-
-## PHASE 5 — DEVIL (هجوم على الخطة + المعمارية)
-
-**الهدف:** اكتشاف المشاكل في الخطة **والمعمارية** قبل كتابة أي كود.
-
-**اقرأ أولاً:** `architecture.md` من PHASE 4.5 قبل الهجوم.
-
-شغّل `/devil 4` على [الخطة + architecture.md]. الهجوم يركّز على:
-
-1. **خطر الحجم** — هل الخيار الذي اختاره أكبر مما يحتاجه الآن؟
-2. **وكيل AI** — هل الدور المطلوب من الـ AI ممكن تقنياً بالمستوى الحالي؟
-3. **الوحدة الأصعب** — ما الجزء الذي سيأخذ وقتاً أكثر مما يتوقع؟
-4. **نقطة الفشل الوحيدة** — ما الذي إذا لم يشتغل، يتوقف كل شيء؟
-
-بعد الهجوم:
-```
-هل تريد تعديل أي شيء في الخطة؟
-أم نكمل مع معرفة هذه المخاطر؟
-```
-
-إذا عدّل → حدّث `context.md` وأعد Phase 5 مرة واحدة.
-إذا كمل → سجّل المخاطر المقبولة في `context.md` وانتقل.
-
----
-
-## PHASE 6 — PROTOTYPE (النموذج الأولي HTML)
-
-**الهدف:** بناء شكل النظام قبل كتابة أي كود حقيقي.
-
-**المبدأ:** تغيير في HTML = 5 دقائق. تغيير في React بعد 10 جلسات = يوم كامل.
-
-### الشاشات المطلوبة (بالترتيب)
-
-ابنِ HTML بسيط لكل شاشة — بدون JavaScript معقد، بدون قاعدة بيانات:
-
-**1. شاشة الدخول (Login)**
-```html
-<!-- شاشة بسيطة: حقل email + password + زر دخول -->
-<!-- لا منطق حقيقي — فقط الشكل -->
-```
-
-**2. لوحة التحكم الرئيسية (Dashboard)**
-```html
-<!-- Sidebar على اليمين + Header + بطاقات إحصائية -->
-<!-- أرقام وهمية لكن الشكل حقيقي -->
-```
-
-**3. الشاشة الأساسية للنظام**
-```html
-<!-- مثال محاسبة: قائمة الفواتير مع بيانات وهمية -->
-<!-- مثال مستشفى: قائمة المواعيد -->
-<!-- مثال مبيعات: شاشة POS -->
-```
-
-**4. نموذج الإضافة (Form)**
-```html
-<!-- نموذج إضافة السجل الرئيسي -->
-<!-- مثال: نموذج فاتورة جديدة -->
-```
-
-**5. واجهة وكيل AI**
-```html
-<!-- صندوق محادثة بسيط + رسائل وهمية -->
-```
-
-### أسلوب البناء
-
-```
-1. ابنِ الـ 5 شاشات HTML في جلسة واحدة
-2. شغّل /tweak على كل شاشة → المتدرب يضبط الألوان والمساحات
-3. احفظ الـ HTML كـ "design spec" في مجلد المشروع
-4. انتظر موافقة المتدرب على كل شاشة
-5. فقط بعد الموافقة الكاملة → انتقل لـ PHASE 7
-```
-
-### الموافقة النهائية
-
-```
-✅ الشاشات المعتمدة:
-- [ ] Login
-- [ ] Dashboard
-- [ ] [الشاشة الرئيسية]
-- [ ] نموذج الإضافة
-- [ ] واجهة AI
-
-هل أنت راضٍ عن الشكل العام؟
-هذه الشاشات ستصبح المرجع البصري لكل الكود القادم.
-```
-
-**لا تنتقل لـ PHASE 7 حتى تُعتمد جميع الشاشات.**
-
----
-
-## PHASE 7 — BUILD LOOP (حلقة البناء)
-
-### PHASE 7A — CORE ENGINE (الأساس أولاً)
-
-**الهدف:** بناء الطبقة التي تجلس فوقها كل ال features.
-
-**شغّل:** `/saas-core` أو اقرأ `../saas-core/SKILL.md` واتبع الطبقات الست.
-
-**الطبقات الست بالترتيب:**
-```
-1. DB Foundation     ← tenants + users + RLS policies
-2. Auth System       ← login/logout/refresh/me endpoints
-3. Multi-tenant      ← middleware نفصل البيانات تلقائياً
-4. Permission Guard  ← role-based decorators + frontend hooks
-5. Base API         ← FastAPI setup + CORS + error handling
-6. Frontend Shell   ← Next.js + Layout + Auth pages + API client
-```
-
-**لا تنتقل لـ 7B حتى يكتمل checklist الطبقات الست.**
-
----
-
-### PHASE 7B — FEATURE LOOP (بناء الوحدات)
-
-**اقرأ أولاً:** `stacks/option-[x].md` + `../next-skill/SKILL.md` لكل patterns الكود.
-
-### 5A — الهيكل الأساسي (Scaffold)
-
-اعرض شجرة المجلدات قبل إنشاء أي ملف:
-
-```
-[اسم النظام]/
-├── frontend/          ← الواجهة (المستخدم يراها)
-├── backend/           ← الخادم (البيانات والمنطق)
-├── ai-agent/          ← وكيل الذكاء الاصطناعي
-├── database/          ← قاعدة البيانات وهيكلها
-├── docs/              ← التوثيق
-└── README.md          ← كيفية تشغيل النظام
-```
-
-اسأل: "هل هذا الهيكل مناسب؟ أم تريد تعديلاً؟"
-
-بعد الموافقة: أنشئ الملفات.
-
----
-
-### 5B — حلقة الوحدات (Feature Loop)
-
-لكل وحدة أو ميزة:
-
-**قبل البناء:**
-```
-🔨 الآن نبني: [اسم الوحدة]
-ما الذي ستحتويه: [3-5 نقاط]
-الوقت المتوقع: [X دقيقة / جلسة]
-```
-
-**أثناء البناء:**
-- اكتب الكود
-- اشرح كل ملف في جملة واحدة بعد إنشائه
-- إذا كانت الوحدة واجهة HTML/CSS → شغّل `/tweak` لتمكين المتدرب من التعديل المباشر في المتصفح
-
-**بعد البناء:**
-```
-✅ انتهينا من: [الوحدة]
-ما تم: [قائمة بالملفات]
-يمكنك الآن: [ما يستطيع المتدرب اختباره]
-```
-
----
-
-### 5C — نقاط التفتيش (Checkpoints)
-
-**كل 3 وحدات أو نهاية كل جلسة** — أوقف واعرض:
-
-```
-📍 نقطة تفتيش — الجلسة [N]
-
-✅ انتهى:
-- [وحدة] ✓
-- [وحدة] ✓
-- [وحدة] ✓
-
-⏳ التالي:
-- [وحدة]
-- [وحدة]
-
-⚠️ مشاكل مفتوحة: [إن وجدت / لا يوجد]
-
-هل نكمل؟ أم تريد تعديل الأولويات؟
-```
-
-حدّث `session-log.md` بعد كل checkpoint بدون انتظار.
-
----
-
-### قواعد Build Loop
-
-- لا تبني وحدتين في نفس الوقت
-- إذا طلب المتدرب ميزة جديدة في المنتصف → شغّل `/align` عليها قبل إضافتها
-- إذا بدت الوحدة أصعب من المتوقع → أوقف وأخبر المتدرب بالوقت الحقيقي
-- لا تتجاوز الـ checkpoint بدون موافقة
-
----
-
-## PHASE 8 — VERIFY (التحقق قبل الشحن)
-
-**الهدف:** هجوم على النظام المبني فعلاً — ليس على الخطة.
-
-شغّل `/devil 5` على الكود والنظام الحقيقي:
-
-1. **أمان البيانات** — هل بيانات العملاء محمية؟
-2. **معالجة الأخطاء** — ماذا يحدث عند انقطاع الإنترنت أو فشل الـ AI؟
-3. **سهولة الاستخدام** — هل المتدرب نفسه يقدر يشغّله بدون مساعدة؟
-4. **الأداء** — هل سيتحمل 50 مستخدم في نفس الوقت؟
-5. **البيانات التجريبية** — هل النظام يعمل ببيانات حقيقية؟
-
-بعد الهجوم، صنّف المشاكل:
-```
-🔴 حرج — يجب إصلاحه قبل الشحن
-🟡 مهم — يُصلح في النسخة التالية
-🟢 مقبول — مخاطرة معروفة
-```
-
-أصلح الـ 🔴 فوراً. سجّل الـ 🟡 في `context.md`.
-
----
-
-## PHASE 9 — SHIP + CALIBRATE (الشحن والتحسين)
-
-### 7A — تحديث context.md النهائي
-
-```markdown
-**الحالة:** مكتمل ✅
-**تاريخ الشحن:** [التاريخ]
-**المرحلة:** منتهية
-
-## ما تم بناؤه
-[وصف 3-4 جمل للنظام الكامل]
-
-## كيفية التشغيل
-[خطوات مرقّمة بسيطة]
-
-## الوحدات المكتملة
-- [x] وحدة 1
-- [x] وحدة 2
-...
-
-## المعروف والمقبول
-[المشاكل الـ 🟡 المؤجّلة]
-```
-
-### 7B — Calibrate
-
-شغّل `/calibrate` على جميع جلسات البناء. اكتشف:
-- ما القرارات التي تغيّرت بعد البناء الفعلي؟
-- ما الوحدات التي أخذت ضعف الوقت المتوقع؟
-- ما النمط الذي يستحق أن يُحفظ للمشاريع القادمة؟
-
-### 7C — رسالة الشحن
-
-```
-🎉 النظام جاهز: [اسم النظام]
-
-ما بُني: [جملتان]
-مكانه: [المسار أو الرابط]
-كيف يشتغل: [أمر أو رابط]
-ملف السياق: [مسار context.md]
-
-للرجوع لاحقاً: /build resume [ID]
-لتحسين المهارة: /calibrate lite
-```
-
----
-
-## أوامر وسط الجلسة
-
-| الأمر | ماذا يفعل |
-|---|---|
-| `/build status` | أين نحن؟ ما انتهى؟ ما التالي؟ |
-| `/build pause` | أوقف بشكل نظيف وسجّل المكان |
-| `/build resume [ID]` | ارجع للمشروع من context.md |
-| `/build scope [ميزة]` | align على ميزة جديدة قبل إضافتها |
-| `/build options [قرار]` | burst 3 خيارات لقرار في المنتصف |
-| `/build attack [جزء]` | devil على وحدة بعينها |
-| `/build tweak [ملف]` | tweak على واجهة HTML مبنية |
-
----
-
-## قواعد لا تُكسر
-
-1. **لا تبدأ الكود قبل Phase 1** — الأسئلة ليست اختيارية
-2. **لا تتجاوز Phase 2** — بدون coordinate لا يوجد استمرارية
-3. **لا تتجاوز Phase 3 (SCOUT)** — المتدرب يجب أن يرى ما يوجد ويختار بوعي
-4. **لا تختار المعمارية بدل المتدرب** — عرض A/B/C دائماً، المتدرب يختار
-5. **لا تبدأ الكود قبل موافقة Phase 6 (PROTOTYPE)** — الشكل يُعتمد قبل الكود
-6. **لا تبني قبل عرض الشجرة** — المتدرب يوافق على الهيكل أولاً
-7. **لا تشحن بدون Phase 8** — الـ devil على الكود الحقيقي غير قابل للتجاوز
-8. **حدّث session-log بعد كل checkpoint** — لا تنتظر نهاية المشروع
-
----
-
-## مثال على الاستخدام
-
-```
-المتدرب: /build نظام محاسبة
-
-الوكيل:
-ما نوع النظام الذي تريد بناءه؟
-1. 📊 نظام محاسبة وفواتير  ← هذا
-...
-
-→ Phase 0: تحديد النوع والمستخدمين
-→ Phase 1: 5 أسئلة بلغة بسيطة
-→ Phase 2: إنشاء مجلد account-ai
-→ Phase 3: عرض أفضل 3 حلول مفتوحة (Akaunting, Invoice Ninja, ERPNext)
-           المتدرب يختار: "ابني فوق Akaunting"
-→ Phase 4: عرض A/B/C → المتدرب يختار B
-→ Phase 5: هجوم على خطة B
-→ Phase 6: بناء 5 شاشات HTML + /tweak → موافقة
-→ Phase 7: بناء الوحدات بالتسلسل (فوق Akaunting + AI layer)
-→ Phase 8: devil على الكود الحقيقي
-→ Phase 9: الشحن + calibrate
-```
+## THE 10-PHASE PROTOCOL
+
+### PHASE 0: IDENTIFY
+- **INPUT:** User request.
+- **GENERATE:** Analyze the request. If ambiguous, ask clarifying questions.
+- **VALIDATE:** Is the core business domain clear?
+- **STOP/WAIT:** Ask user to confirm the identified domain.
+
+### PHASE 1: ALIGN
+- **INPUT:** Identified domain.
+- **GENERATE:** Present 5 critical questions regarding scale, users, AI agent role, integration, and budget.
+- **VALIDATE:** Are all 5 questions answered?
+- **STOP/WAIT:** Wait for user responses.
+
+### PHASE 2: COORDINATE
+- **INPUT:** User answers from Phase 1.
+- **GENERATE:** Read `protocols/coordinate.md`. Initialize `context.md` and `session-log.md` using templates.
+- **VALIDATE:** Are the context files created and populated?
+- **STOP/WAIT:** Ask user to confirm project initialization.
+
+### PHASE 3: SCOUT
+- **INPUT:** `context.md`.
+- **GENERATE:** Read `sources/open-source.md`. Propose existing open-source solutions to avoid reinventing the wheel.
+- **VALIDATE:** Did we check for existing solutions?
+- **STOP/WAIT:** Ask user if they want to use an open-source base or build custom (A/B/C).
+
+### PHASE 4: BURST (Stack Selection)
+- **INPUT:** User decision from Phase 3.
+- **GENERATE:** Present architecture options A, B, and C (from `stacks/option-*.md`).
+- **VALIDATE:** Is a valid stack selected?
+- **STOP/WAIT:** Wait for stack selection.
+
+### PHASE 4.5: ARCHITECT
+- **INPUT:** Selected stack.
+- **GENERATE:** Trigger `/sysarch` (or read `../saas-architect/SKILL.md`).
+- **VALIDATE:** Is `architecture.md` generated and complete? Does it include RLS, Auth, Domain Model, and AI design?
+- **STOP/WAIT:** Wait for user sign-off on `architecture.md`.
+
+### PHASE 5: DEVIL (Red Teaming)
+- **INPUT:** `architecture.md` and `context.md`.
+- **GENERATE:** Read `protocols/devil.md`. Attack the architecture. Identify single points of failure, scalability bottlenecks, and AI integration risks.
+- **VALIDATE:** Has the red-team report been generated?
+- **STOP/WAIT:** Present risks. Ask user if they want to adjust the architecture or proceed with accepted risks.
+
+### PHASE 6: PROTOTYPE
+- **INPUT:** Approved `architecture.md`.
+- **GENERATE:** Build 5 HTML-only wireframes (no React/complex JS).
+- **VALIDATE:** Do the wireframes cover the core user flows?
+- **STOP/WAIT:** Ask user to approve the visual layout.
+
+### PHASE 7A: CORE ENGINE
+- **INPUT:** Approved wireframes and `architecture.md`.
+- **GENERATE:** Trigger `/syscore` (or read `../saas-core/SKILL.md`). Build the 6 foundational layers (DB+RLS, Auth, Multi-tenant, Permission Guard, Base API, Frontend Shell).
+- **VALIDATE:** Read `protocols/validate.md` and run the security and core engine checklist. NO hardcoded secrets allowed.
+- **STOP/WAIT:** Ask user to verify the Core Engine deployment.
+
+### PHASE 7B: FEATURE LOOP
+- **INPUT:** Deployed Core Engine.
+- **GENERATE:** Trigger `/sysweb` (or read `../next-skill/SKILL.md`). Iterate through features based on `architecture.md`. Max 3 files per feature.
+- **VALIDATE:** Does the feature work? Is it secure?
+- **STOP/WAIT:** Wait for user approval after each feature module.
+
+### PHASE 8: VERIFY
+- **INPUT:** Completed application.
+- **GENERATE:** Run a final security and architecture audit.
+- **VALIDATE:** Does the system meet all requirements in `architecture.md`?
+- **STOP/WAIT:** Present final audit report.
+
+### PHASE 9: SHIP
+- **INPUT:** Audited application.
+- **GENERATE:** Provide deployment instructions. Read `protocols/calibrate.md` to update templates based on lessons learned.
+- **VALIDATE:** Is deployment successful?
+- **STOP/WAIT:** Project complete.

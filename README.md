@@ -1,186 +1,162 @@
-# 🏗️ SysForge — هندسة الأنظمة
+# 🏗️ SysForge — AI-Native SaaS Operating System
 
-> **Systems Engineering for Claude Code**  
-> من الفكرة إلى التسليم — منظومة بناء SaaS احترافية للمتدربين
-
----
-
-## ما هو SysForge؟
-
-**SysForge** هي منظومة مهارات متكاملة لـ [Claude Code](https://claude.ai/code) تُمكّن أي متدرب من بناء أنظمة أعمال SaaS كاملة — محاسبة، مستشفيات، مبيعات، موارد بشرية — مدمجة مع وكيل ذكاء اصطناعي.
-
-```
-/sysforge نظام محاسبة  ←  يبدأ رحلة البناء الكاملة تلقائياً
-```
+> **Production-Grade Systems Engineering for Agentic Coding Systems**  
+> From concept to deployment through a strict 10-phase enterprise protocol.
 
 ---
 
-## الأوامر الأربعة
+## What is SysForge?
 
-| الأمر | الدور | متى تستخدمه |
-|---|---|---|
-| `/sysforge` | القائد الرئيسي — 10 مراحل | البداية |
-| `/sysarch` | معمارية الأنظمة — Domain Model, Auth, API | PHASE 4.5 |
-| `/syscore` | أساس الأنظمة — DB+RLS, Auth, Middleware | PHASE 7A |
-| `/sysweb` | بنّاء الويب — Next.js + FastAPI + AI | PHASE 7B |
+**SysForge** is not just a boilerplate; it is an **AI-Native SaaS Operating System** designed for Claude Code, Cursor, and Agentic Coding frameworks. It enforces a rigid architectural discipline to build secure, scalable, multi-tenant enterprise applications (Accounting, HR, Healthcare, POS).
 
----
-
-## رحلة البناء — 10 مراحل
-
-```
-PHASE 0   IDENTIFY    اختيار نوع النظام
-PHASE 1   ALIGN       5 أسئلة لتوضيح النية
-PHASE 2   COORDINATE  إنشاء ذاكرة المشروع (context.md)
-PHASE 3   SCOUT       أفضل 3 مصادر مفتوحة للنظام
-PHASE 4   BURST       اختيار معمارية A/B/C
-
-PHASE 4.5 ARCHITECT ← /sysarch
-          ├── Domain Model (الكيانات والعلاقات)
-          ├── Multi-tenant Strategy (RLS/Schema/DB)
-          ├── Auth + Permission Flow (JWT + 4 أدوار)
-          ├── AI Agent Architecture (النوع + الأدوات)
-          └── API Contract (كل الـ endpoints)
-
-PHASE 5   DEVIL       هجوم على الخطة والمعمارية
-PHASE 6   PROTOTYPE   5 شاشات HTML + موافقة التصميم
-
-PHASE 7A  CORE ENGINE ← /syscore
-          ├── Layer 1: DB Foundation (tenants + users + RLS)
-          ├── Layer 2: Auth System (JWT endpoints)
-          ├── Layer 3: Multi-tenant Middleware
-          ├── Layer 4: Permission Guard
-          ├── Layer 5: Base API Structure
-          └── Layer 6: Frontend Shell
-
-PHASE 7B  FEATURES    ← /sysweb
-          وحدات النظام فوق الأساس (3 ملفات لكل feature)
-
-PHASE 8   VERIFY      devil على الكود الحقيقي
-PHASE 9   SHIP        نشر + calibrate
-```
-
----
-
-## الأنظمة المدعومة
-
-| النظام | الوحدات الجاهزة |
-|---|---|
-| 📊 محاسبة | فواتير، عملاء، مصروفات، أستاذ عام، تقارير |
-| 🏥 مستشفى | مرضى، أطباء، مواعيد، سجلات طبية |
-| 🛒 مبيعات + POS | منتجات، طلبات، مخزون، نقطة بيع |
-| 👥 موارد بشرية | موظفون، حضور، إجازات، رواتب |
-
----
-
-## التثبيت
-
-### عالمي (يعمل في كل مشروع)
+By enforcing "Architecture before Implementation" and strict "Phase Locking", SysForge prevents the spaghetti code and architectural drift commonly produced by unstructured AI coding sessions.
 
 ```bash
-# استنسخ المستودع
-git clone https://github.com/hashmrcf-ui/-SysForge-.git
-
-# انسخ المهارات للمجلد العالمي
-cp -r ./.claude/skills/* ~/.claude/skills/
+/sysforge [System Name]  # Initiates the 10-phase master protocol
 ```
 
-**Windows:**
+---
+
+## 🧭 Architecture & Workflow
+
+SysForge operates as a multi-agent orchestration model.
+
+```ascii
+                      +-------------------+
+                      |   USER REQUEST    |
+                      +-------------------+
+                               |
+                      [ SysForge Orchestrator ]
+                      (10-Phase Protocol Manager)
+                               |
+        +----------------------+----------------------+
+        |                      |                      |
+[ SysArch ]               [ SysCore ]            [ SysWeb ]
+(Architecture)         (Infrastructure)      (Feature Modules)
+- Domain Models        - DB Foundation       - Business Logic
+- Multi-tenant         - Strict RLS          - UI Components
+- Security/Auth        - Auth Middleware     - AI Integration
+```
+
+### The Phase Protocol Loop
+Every phase executes a strict internal protocol before moving forward:
+`INPUT` → `DECISION` → `GENERATE` → `VALIDATE` → `STOP` → `WAIT FOR APPROVAL`
+
+---
+
+## 🛠️ The 4 Core Skills
+
+| Skill | Role | When It Runs |
+|---|---|---|
+| `/sysforge` | **Master Orchestrator.** Manages context, session logging, and phase progression. | Start of project |
+| `/sysarch` | **Domain Architect.** Designs the Domain Model, Tenant Strategy, and AI interactions. | Phase 4.5 |
+| `/syscore` | **Infrastructure Engineer.** Builds the rigid 6-layer foundation (DB, RLS, Auth). | Phase 7A |
+| `/sysweb` | **Feature Developer.** Iteratively builds modular features (max 3 files per feature). | Phase 7B |
+
+---
+
+## 🚀 The 10-Phase Master Protocol
+
+```text
+PHASE 0   IDENTIFY    Identify core business domain.
+PHASE 1   ALIGN       Resolve ambiguity via 5 critical scale/budget questions.
+PHASE 2   COORDINATE  Initialize memory (context.md, session-log.md).
+PHASE 3   SCOUT       Evaluate Open Source alternatives vs. Custom Build.
+PHASE 4   BURST       Select technology stack (A/B/C).
+
+PHASE 4.5 ARCHITECT   Trigger /sysarch. Output: architecture.md
+          ├── Domain Model
+          ├── Multi-tenant Strategy (RLS, Schema, DB)
+          ├── Auth & Permission Flow (RBAC)
+          └── AI Agent Capabilities
+
+PHASE 5   DEVIL       Internal Red Team attack on architecture.
+PHASE 6   PROTOTYPE   HTML-only wireframes for visual sign-off.
+
+PHASE 7A  CORE ENGINE Trigger /syscore. Build Foundation.
+          ├── DB Foundation (tenants, users)
+          ├── Strict Row-Level Security (RLS)
+          ├── Auth System (HttpOnly, Rotation)
+          ├── Multi-tenant Middleware
+          ├── Permission Guard (RBAC)
+          └── Base API Structure
+
+PHASE 7B  FEATURES    Trigger /sysweb. Loop through features.
+          └── Enforce 3-files-per-feature rule (Model, Router, Page).
+
+PHASE 8   VERIFY      Final security and architecture audit.
+PHASE 9   SHIP        Deploy and execute /calibrate for template updates.
+```
+
+---
+
+## 🛡️ Enterprise SaaS Philosophy
+
+SysForge enforces strict rules to ensure production readiness:
+
+1. **Validation Engine:** Progression between phases is locked behind a strict Validation Engine. Zero tolerance for hardcoded secrets.
+2. **AI-Native Constraints:** AI endpoints must be tenant-aware, rate-limited, and auditable.
+3. **Anti-Spaghetti:** No direct DB calls in UI components. No shared mutable state. Max 3 files per feature.
+4. **Security First:** RLS is mandatory for multi-tenant data. JWTs belong in HttpOnly cookies, not localStorage.
+
+---
+
+## 📚 Documentation
+
+Refer to the `docs/` folder for in-depth protocol specifications:
+- `docs/architecture.md` - Core system design.
+- `docs/protocol.md` - The Execution Loop.
+- `docs/validation.md` - Phase-locking checklists.
+- `docs/security.md` - Guidelines for RLS and Auth.
+- `docs/ai-system.md` - Tenant-aware AI integration.
+- `docs/multi-tenant.md` - Strategies (RLS vs Schema vs DB).
+
+---
+
+## ⚙️ Installation
+
+### Global Install (Recommended for Claude Code)
+
+```bash
+# Clone the repository
+git clone https://github.com/hashmrcf-ui/-SysForge-.git
+
+# Install globally to your Claude environment
+cp -r ./-SysForge-/.claude/skills/* ~/.claude/skills/
+```
+
+**Windows (PowerShell):**
 ```powershell
 git clone https://github.com/hashmrcf-ui/-SysForge-.git
-Copy-Item -Recurse .\.claude\skills\* "$env:USERPROFILE\.claude\skills\"
+Copy-Item -Recurse .\-SysForge-\.claude\skills\* "$env:USERPROFILE\.claude\skills\"
 ```
 
-### على مستوى المشروع
+### Local Project Install
+Copy the `.claude` folder directly into your project root to run locally.
+
+---
+
+## 🎯 Usage
+
+To start a new project or resume an existing one:
 
 ```bash
-# انسخ مجلد .claude إلى جذر مشروعك
-cp -r ./.claude ./your-project/
+# Start the Master Orchestrator
+/sysforge [System Description]
+
+# Example:
+/sysforge Enterprise HR Management System
 ```
 
----
-
-## الاستخدام
-
-```bash
-# في Claude Code — ابدأ مشروع جديد
-/sysforge نظام محاسبة
-
-# أو معمارية مباشرة
-/sysarch
-
-# أو بناء الأساس مباشرة
-/syscore
-
-# أو بناء الويب مباشرة
-/sysweb
-```
-
----
-
-## هيكل المستودع
-
-```
-SysForge/
-├── .claude/
-│   └── skills/
-│       ├── build/              ← /sysforge (القائد الرئيسي)
-│       │   ├── SKILL.md
-│       │   ├── systems/        ← blueprints للأنظمة
-│       │   │   ├── accounting.md
-│       │   │   ├── hospital.md
-│       │   │   ├── sales.md
-│       │   │   └── hr.md
-│       │   ├── stacks/         ← خيارات المعمارية
-│       │   │   ├── option-a.md
-│       │   │   ├── option-b.md
-│       │   │   └── option-c.md
-│       │   ├── sources/        ← مصادر مفتوحة
-│       │   │   └── open-source.md
-│       │   └── templates/      ← قوالب الملفات
-│       │       ├── context.md
-│       │       ├── session-log.md
-│       │       └── architecture.md
-│       ├── saas-architect/     ← /sysarch
-│       │   └── SKILL.md
-│       ├── saas-core/          ← /syscore
-│       │   └── SKILL.md
-│       └── next-skill/         ← /sysweb
-│           └── SKILL.md
-└── README.md
-```
-
----
-
-## المتطلبات
-
-- [Claude Code](https://claude.ai/code) مثبّت
-- Node.js 18+
-- Python 3.11+
-- PostgreSQL (أو Supabase للنشر السريع)
-
----
-
-## المبدأ الأساسي
-
-```
-Architecture → Core Engine → Features
-     ↓               ↓           ↓
-  ما نبني       الأساس      فوق الأساس
-```
-
-**بعد اكتمال SysCore — كل feature جديدة = 3 ملفات فقط.**
-
----
-
-## الترخيص
-
-MIT License — استخدم، عدّل، وشارك.
+Other commands:
+- `/sysforge resume` - Resume from `context.md`
+- `/sysforge status` - Print current phase and validation state
+- `/sysforge scope` - Adjust project scope
 
 ---
 
 <div align="center">
 
-**🏗️ SysForge — ابنِ أنظمة تدوم**
+**SysForge — Build Systems that Last.**
 
 </div>
