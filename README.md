@@ -1,33 +1,44 @@
 # 🏗️ SysForge — AI-Native SaaS Operating System
 
-> **Production-Grade Systems Engineering for Agentic Coding Systems**  
-> From concept to deployment through a strict 10-phase enterprise protocol.
+> **The AI CTO for Agentic Coding Systems**  
+> SysForge is not a coding assistant. It is a protocol-driven Runtime Engine that orchestrates the construction of Enterprise-Grade SaaS systems.
 
 ---
 
 ## What is SysForge?
 
-**SysForge** is not just a boilerplate; it is an **AI-Native SaaS Operating System** designed for Claude Code, Cursor, and Agentic Coding frameworks. It enforces a rigid architectural discipline to build secure, scalable, multi-tenant enterprise applications (Accounting, HR, Healthcare, POS).
+SysForge shifts the paradigm from **"instruction-based generation"** (spaghetti code) to **"protocol-driven system orchestration"** (enterprise architecture). 
 
-By enforcing "Architecture before Implementation" and strict "Phase Locking", SysForge prevents the spaghetti code and architectural drift commonly produced by unstructured AI coding sessions.
+It enforces a rigid 10-Phase Protocol governed by a **Runtime Intelligence Layer**. It tracks state, scores architecture, manages project memory, and automatically handles failure recovery. 
 
 ```bash
-/sysforge [System Name]  # Initiates the 10-phase master protocol
+/sysforge [System Name]  # Initializes the Runtime Engine
 ```
 
 ---
 
-## 🧭 Architecture & Workflow
+## 🧠 The Runtime Intelligence Layer (`/runtime`)
 
-SysForge operates as a multi-agent orchestration model.
+SysForge operates via a strict internal engine (`build/runtime/engine.md`) that wraps all execution in a deterministic state machine.
+
+### Core Runtime Capabilities
+1. **State Machine (`state-machine.md`):** Execution flows strictly through `PENDING` → `ACTIVE` → `VALIDATING` → `LOCKED` → `APPROVED` → `COMPLETED`. No skipping allowed.
+2. **Project Memory (`memory.md`):** Automatically persists architectural decisions, rejected alternatives, and context in `project/context/`.
+3. **Dependency-Aware Validation (`validate.md`):** A validation graph that blocks downstream generation if upstream contracts (e.g., Auth, RLS) are violated.
+4. **Failure Recovery (`recovery.md`):** If generation fails, SysForge isolates the failure, preserves valid outputs, and regenerates *only* the broken node. It never restarts the pipeline blindly.
+5. **Architectural Scoring (`scoring.md`):** Every phase is scored on Security, Scalability, Modularity, and AI-Readiness. Sub-standard generation triggers a halt.
+
+---
+
+## 🧭 Architecture Workflow
 
 ```ascii
                       +-------------------+
                       |   USER REQUEST    |
                       +-------------------+
                                |
-                      [ SysForge Orchestrator ]
-                      (10-Phase Protocol Manager)
+                      [ SysForge Runtime ]
+                 (State Machine & Memory Engine)
                                |
         +----------------------+----------------------+
         |                      |                      |
@@ -38,20 +49,8 @@ SysForge operates as a multi-agent orchestration model.
 - Security/Auth        - Auth Middleware     - AI Integration
 ```
 
-### The Phase Protocol Loop
-Every phase executes a strict internal protocol before moving forward:
-`INPUT` → `DECISION` → `GENERATE` → `VALIDATE` → `STOP` → `WAIT FOR APPROVAL`
-
----
-
-## 🛠️ The 4 Core Skills
-
-| Skill | Role | When It Runs |
-|---|---|---|
-| `/sysforge` | **Master Orchestrator.** Manages context, session logging, and phase progression. | Start of project |
-| `/sysarch` | **Domain Architect.** Designs the Domain Model, Tenant Strategy, and AI interactions. | Phase 4.5 |
-| `/syscore` | **Infrastructure Engineer.** Builds the rigid 6-layer foundation (DB, RLS, Auth). | Phase 7A |
-| `/sysweb` | **Feature Developer.** Iteratively builds modular features (max 3 files per feature). | Phase 7B |
+### The Engine Loop
+`READ STATE` → `EVALUATE` → `DELEGATE` → `VALIDATE & SCORE` → `LOCK` → `APPROVAL GATE` → `ADVANCE`
 
 ---
 
@@ -60,56 +59,42 @@ Every phase executes a strict internal protocol before moving forward:
 ```text
 PHASE 0   IDENTIFY    Identify core business domain.
 PHASE 1   ALIGN       Resolve ambiguity via 5 critical scale/budget questions.
-PHASE 2   COORDINATE  Initialize memory (context.md, session-log.md).
+PHASE 2   COORDINATE  Initialize memory (context.md, state.json).
 PHASE 3   SCOUT       Evaluate Open Source alternatives vs. Custom Build.
 PHASE 4   BURST       Select technology stack (A/B/C).
 
-PHASE 4.5 ARCHITECT   Trigger /sysarch. Output: architecture.md
-          ├── Domain Model
-          ├── Multi-tenant Strategy (RLS, Schema, DB)
-          ├── Auth & Permission Flow (RBAC)
-          └── AI Agent Capabilities
+PHASE 4.5 ARCHITECT   Delegated to SysArch. Output: architecture.md
+          ├── Domain Model & Multi-tenant Strategy
+          └── Auth, Permissions & AI Constraints
 
-PHASE 5   DEVIL       Internal Red Team attack on architecture.
+PHASE 5   DEVIL       Red Team attack on architecture.
 PHASE 6   PROTOTYPE   HTML-only wireframes for visual sign-off.
 
-PHASE 7A  CORE ENGINE Trigger /syscore. Build Foundation.
-          ├── DB Foundation (tenants, users)
-          ├── Strict Row-Level Security (RLS)
-          ├── Auth System (HttpOnly, Rotation)
-          ├── Multi-tenant Middleware
-          ├── Permission Guard (RBAC)
-          └── Base API Structure
+PHASE 7A  CORE ENGINE Delegated to SysCore. Build Foundation.
+          ├── Strict Row-Level Security (RLS) & DB Foundation
+          └── Auth System, Middleware, Permission Guard
 
-PHASE 7B  FEATURES    Trigger /sysweb. Loop through features.
+PHASE 7B  FEATURES    Delegated to SysWeb. Feature Loop.
           └── Enforce 3-files-per-feature rule (Model, Router, Page).
 
-PHASE 8   VERIFY      Final security and architecture audit.
-PHASE 9   SHIP        Deploy and execute /calibrate for template updates.
+PHASE 8   VERIFY      Final security and architecture graph audit.
+PHASE 9   SHIP        Deploy and update intelligence templates.
 ```
 
 ---
 
 ## 🛡️ Enterprise SaaS Philosophy
 
-SysForge enforces strict rules to ensure production readiness:
-
-1. **Validation Engine:** Progression between phases is locked behind a strict Validation Engine. Zero tolerance for hardcoded secrets.
+1. **Validation Engine:** Progression between phases is locked behind the Validation Graph. Zero tolerance for hardcoded secrets.
 2. **AI-Native Constraints:** AI endpoints must be tenant-aware, rate-limited, and auditable.
-3. **Anti-Spaghetti:** No direct DB calls in UI components. No shared mutable state. Max 3 files per feature.
-4. **Security First:** RLS is mandatory for multi-tenant data. JWTs belong in HttpOnly cookies, not localStorage.
+3. **Anti-Spaghetti:** No direct DB calls in UI components. Max 3 files per feature.
+4. **Human-in-the-Loop (HITL):** The system locks at critical gates (e.g., Architecture generation) requiring explicit human approval before continuing.
 
 ---
 
 ## 📚 Documentation
 
-Refer to the `docs/` folder for in-depth protocol specifications:
-- `docs/architecture.md` - Core system design.
-- `docs/protocol.md` - The Execution Loop.
-- `docs/validation.md` - Phase-locking checklists.
-- `docs/security.md` - Guidelines for RLS and Auth.
-- `docs/ai-system.md` - Tenant-aware AI integration.
-- `docs/multi-tenant.md` - Strategies (RLS vs Schema vs DB).
+Refer to the `build/runtime/` and `docs/` folders for in-depth protocol specifications.
 
 ---
 
@@ -118,10 +103,7 @@ Refer to the `docs/` folder for in-depth protocol specifications:
 ### Global Install (Recommended for Claude Code)
 
 ```bash
-# Clone the repository
 git clone https://github.com/hashmrcf-ui/-SysForge-.git
-
-# Install globally to your Claude environment
 cp -r ./-SysForge-/.claude/skills/* ~/.claude/skills/
 ```
 
@@ -131,27 +113,14 @@ git clone https://github.com/hashmrcf-ui/-SysForge-.git
 Copy-Item -Recurse .\-SysForge-\.claude\skills\* "$env:USERPROFILE\.claude\skills\"
 ```
 
-### Local Project Install
-Copy the `.claude` folder directly into your project root to run locally.
-
 ---
 
 ## 🎯 Usage
 
-To start a new project or resume an existing one:
-
 ```bash
-# Start the Master Orchestrator
-/sysforge [System Description]
-
-# Example:
+# Start the Runtime Engine
 /sysforge Enterprise HR Management System
 ```
-
-Other commands:
-- `/sysforge resume` - Resume from `context.md`
-- `/sysforge status` - Print current phase and validation state
-- `/sysforge scope` - Adjust project scope
 
 ---
 

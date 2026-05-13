@@ -18,30 +18,31 @@ To iteratively build business features and AI capabilities on top of the SysCore
 - Frontend Components and Pages.
 
 # RULES
-1. **Anti-Spaghetti (Strict):**
+1. **State Machine Awareness:** You are executing within the `ACTIVE` state of Phase 7B.
+2. **Anti-Spaghetti (Strict):**
    - Max 3 core files per feature (Model, Router, Page).
    - UI components MUST NOT contain direct database queries or complex business logic.
-2. **AI-Native Constraints:**
+3. **AI-Native Constraints:**
    - **Tenant-Aware AI:** AI requests must be scoped strictly to the current `tenant_id`.
    - **Rate Limiting:** AI endpoints must implement rate limiting to prevent abuse.
    - **Streaming:** Heavy AI responses must stream to the client.
    - **Cost Monitoring & Audit:** All AI interactions must log usage metrics for auditing.
 
 # VALIDATION
-Use `build/protocols/validate.md` to ensure:
+Upon completion of a feature module, transition to `VALIDATING` state. The Runtime Engine will use `build/protocols/validate.md` to ensure:
 - The new feature respects existing RLS policies.
 - AI endpoints do not leak cross-tenant data.
 - UI components are pure and use proper state management.
 - Fallback models are defined for AI endpoints in case of primary model failure.
 
 # STOP CONDITION
-Stop when the specific feature module is fully implemented, verified, and the user approves the result.
+Stop when the specific feature module is fully implemented. Signal the Runtime Engine to transition to `VALIDATING`.
 
 # FAILURE HANDLING
-If an AI integration fails due to context limits or timeouts, implement chunking or asynchronous processing strategies. Do not leave broken endpoints.
+If an AI integration fails due to context limits or timeouts, transition to `FAILED`. Trigger `runtime/recovery.md` to implement chunking or fallback models without destroying the valid UI components.
 
 # NEXT PHASE
-Return control to SysForge. Execution repeats Phase 7B for the next feature or proceeds to Phase 8 (VERIFY).
+Return control to the SysForge Runtime Engine. The system will enter the `LOCKED` Approval Gate for the completed feature before looping back.
 
 ---
 

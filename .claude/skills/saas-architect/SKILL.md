@@ -16,25 +16,27 @@ To define the complete architectural blueprint before a single line of code is w
 - `architecture.md` containing the finalized architectural decisions.
 
 # RULES
-1. **No Code Rule:** Absolutely no code generation in this phase.
-2. **Mandatory Tenant Strategy:** Never assume a multi-tenant strategy. Explicitly evaluate RLS vs. Schema vs. Database isolation based on scaling needs.
-3. **AI Native:** The AI Agent is a first-class citizen. Its role and tools must be defined in the architecture.
+1. **State Machine Awareness:** You are executing within the `ACTIVE` state of Phase 4.5. You do not manage global state.
+2. **No Code Rule:** Absolutely no code generation in this phase.
+3. **Mandatory Tenant Strategy:** Never assume a multi-tenant strategy. Explicitly evaluate RLS vs. Schema vs. Database isolation based on scaling needs.
+4. **AI Native:** The AI Agent is a first-class citizen. Its role and tools must be defined in the architecture.
+5. **Memory Update:** Before generating `architecture.md`, you MUST append key decisions to `project/context/architecture_decisions.md` (via `runtime/memory.md`).
 
 # VALIDATION
-Use `build/protocols/validate.md` to ensure:
+Upon completion, transition to `VALIDATING` state. The Runtime Engine will use `build/protocols/validate.md` to ensure:
 - Domain model covers all required entities.
 - Multi-tenant strategy is explicitly documented.
 - Role-based permissions (Super Admin, Tenant Admin, User) are defined.
 - API Contract covers basic CRUD and AI interactions.
 
 # STOP CONDITION
-Stop when `architecture.md` is generated and fully populated.
+Stop when `architecture.md` is generated and fully populated. Signal the Runtime Engine to transition to `VALIDATING`.
 
 # FAILURE HANDLING
-If the user's requirements are contradictory (e.g., extreme data isolation but low budget), explain the tradeoff and ask for a definitive choice before generating the architecture.
+If the user's requirements are contradictory, transition to `FAILED` and trigger `runtime/recovery.md` to resolve the conflict before generating the architecture.
 
 # NEXT PHASE
-Return control to SysForge. Execution proceeds to Phase 5 (DEVIL).
+Return control to the SysForge Runtime Engine (`runtime/engine.md`). Execution will halt at the `LOCKED` Approval Gate before Phase 5.
 
 ---
 

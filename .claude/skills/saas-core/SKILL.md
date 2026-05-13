@@ -19,28 +19,29 @@ To build the foundational engine upon which all future features rely. This engin
 - Next.js Protected Layout Shell.
 
 # RULES
-1. **Security First:**
+1. **State Machine Awareness:** You are executing within the `ACTIVE` state of Phase 7A. 
+2. **Security First:**
    - **NO hardcoded secrets.** All keys must use `.env`.
    - **NO localStorage for sensitive tokens.** Use HttpOnly cookies or secure token passing mechanisms.
    - **Refresh Token Rotation:** Implement proper rotation.
-2. **Tenant Isolation:** Every query must automatically filter by `tenant_id` via middleware.
-3. **Role Enforcement:** All protected routes must enforce Role-Based Access Control (RBAC).
+3. **Tenant Isolation:** Every query must automatically filter by `tenant_id` via middleware.
+4. **Role Enforcement:** All protected routes must enforce Role-Based Access Control (RBAC).
 
 # VALIDATION
-Use `build/protocols/validate.md` to ensure:
+Upon completion, transition to `VALIDATING` state. The Runtime Engine will use `build/protocols/validate.md` (Dependency Graph) to ensure:
 - RLS policies are active on the `users` table.
 - Auth middleware correctly intercepts and parses tokens.
 - Frontend login flow successfully establishes a session.
 - No sensitive data is exposed in the frontend shell.
 
 # STOP CONDITION
-Stop when all 6 layers of the Core Engine are implemented and verified via a local build check.
+Stop when all 6 layers of the Core Engine are implemented. Signal the Runtime Engine to transition to `VALIDATING`.
 
 # FAILURE HANDLING
-If database migrations fail, rollback the migration, explain the SQL error to the user, and propose a fix. Do not proceed until migrations apply cleanly.
+If database migrations fail, transition to `FAILED`. The Runtime Engine (`runtime/recovery.md`) will isolate the failure, rollback the migration, and regenerate the broken schema block.
 
 # NEXT PHASE
-Return control to SysForge. Execution proceeds to Phase 7B (FEATURE LOOP).
+Return control to the SysForge Runtime Engine. Execution will halt at the `LOCKED` Approval Gate before Phase 7B.
 
 ---
 
